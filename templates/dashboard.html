@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>T20 Match Intelligence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- External Grafana-style CSS -->
+  <link rel="stylesheet" href="/static/css/grafana.css">
+</head>
+
+<body>
+
+<header>🏏 T20 Match Intelligence Dashboard</header>
+
+<div class="container">
+
+  <!-- INPUT PANEL -->
+  <div class="form-panel">
+    <select id="innings">
+      <option value="1">1st Innings</option>
+      <option value="2">2nd Innings</option>
+    </select>
+
+    <input id="score" type="number" placeholder="Score">
+    <input id="overs" type="number" step="0.1" placeholder="Overs (e.g. 12.3)">
+    <input id="wickets" type="number" placeholder="Wickets">
+    <input id="target" type="number" placeholder="Target (2nd Innings only)">
+    <button type="button" onclick="predict()">Run Analysis</button>
+  </div>
+
+  <!-- LIVE STATUS -->
+  <div class="section-title">Live Match Status</div>
+  <div class="grid">
+    <div class="card">
+      <h4>Current Situation</h4>
+      <p id="currentSituation">–</p>
+    </div>
+
+    <div class="card">
+      <h4>Required Run Rate (RRR)</h4>
+      <p id="rrr">–</p>
+    </div>
+
+    <div class="card">
+      <h4>Current Status of Game</h4>
+      <p id="status">–</p>
+    </div>
+  </div>
+
+  <!-- PERFORMANCE -->
+  <div class="section-title">Performance Metrics</div>
+  <div class="grid">
+    <div class="card">
+      <h4>Current Run Rate</h4>
+      <p id="runrate">–</p>
+    </div>
+
+    <div class="card">
+      <h4>Remaining Balls</h4>
+      <p id="balls">–</p>
+    </div>
+
+    <div class="card">
+      <h4>Fire Power</h4>
+      <p id="firepower">–</p>
+    </div>
+
+    <div class="card">
+      <h4>Projected Total</h4>
+      <p id="projected">–</p>
+    </div>
+  </div>
+
+  <!-- PROJECTION -->
+  <div class="section-title">Score Projection</div>
+  <div class="grid">
+    <div class="card">
+      <h4>Low Estimate</h4>
+      <p id="low">–</p>
+    </div>
+
+    <div class="card">
+      <h4>High Estimate</h4>
+      <p id="high">–</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Grafana-style UI • FastAPI • Docker • Kubernetes Ready
+</footer>
+
+<script>
+/* ---------- UTILITIES ---------- */
+function clearColors(el) {
+  el.classList.remove("green", "yellow", "red", "blue");
+}
+
+function colorize(el, value) {
+  clearColors(el);
+
+  if (typeof value === "string") {
+    const v = value.toLowerCase();
+    if (v.includes("win") || v.includes("comfort")) el.classList.add("green");
+    else if (v.includes("lose") || v.includes("impossible") || v.includes("pressure")) el.classList.add("red");
+    else el.classList.add("yellow");
+  } else if (!isNaN(value)) {
+    if (value <= 6) el.classList.add("green");
+    else if (value <= 9) el.classList.add("yellow");
+    else el.classList.add("red");
+  }
+}
+
+/* ---------- MAIN FUNCTION ---------- */
+function predict() {
+  const payload = {
+    score: Number(document.getElementById("score").value),
+    overs: Number(document.getElementById("overs").value),
+    wickets: Number(document.getElementById("wickets").value),
+    innings: Number(document.getElementById("innings").value)
+  };
+
+  const targetInput = document.getElementById("target").value;
+  if (payload.innings === 2 && targetInput !== "") {
+    payload.target = Number(targetInput);
+  }
+
+  fetch("/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("API Error");
+    return res.json();
+  })
+  .then(data => {
+
+    /* MAIN METRICS */
+    if (data.main) {
+      runrate.innerText = data.main["Current Runrate"] ?? "–";
+      balls.innerText = data.main["Remaining Balls"] ?? "–";
+      firepower.innerText = data.main["Fire power"]?.toFixed(1) ?? "–";
+      projected.innerText = data.main["Total Score if no more wickets don't fall"] ?? "–";
+    }
+
+    /* SCORE PROJECTION */
+    low.innerText = data.prediction?.["Low estimate"] ?? "–";
+    high.innerText = data.prediction?.["High estimate"] ?? "–";
+
+    /* REQUIRED RUN RATE */
+    if (data.chase?.["Required runrate(RRR)"] !== undefined) {
+      const rrrVal = Number(data.chase["Required runrate(RRR)"]);
+      rrr.innerText = rrrVal;
+      colorize(rrr, rrrVal);
+    } else {
+      rrr.innerText = "N/A";
+      clearColors(rrr);
+    }
+
+    /* CURRENT SITUATION */
+    clearColors(currentSituation);
+
+    if (data.prediction?.["Current situation"]) {
+      currentSituation.innerText = data.prediction["Current situation"];
+      colorize(currentSituation, data.prediction["Current situation"]);
+    } else if (data.chase && data.main) {
+      const rrrVal = Number(data.chase["Required runrate(RRR)"]);
+      const crrVal = Number(data.main["Current Runrate"]);
+
+      if (!isNaN(rrrVal) && !isNaN(crrVal)) {
+        if (crrVal >= rrrVal) {
+          currentSituation.innerText = "Chasing comfortably";
+          currentSituation.classList.add("green");
+        } else if (rrrVal - crrVal <= 2) {
+          currentSituation.innerText = "Tight chase";
+          currentSituation.classList.add("yellow");
+        } else {
+          currentSituation.innerText = "Under pressure";
+          currentSituation.classList.add("red");
+        }
+      } else {
+        currentSituation.innerText = "–";
+      }
+    } else {
+      currentSituation.innerText = "–";
+    }
+
+    /* STATUS */
+    if (data.status) {
+      const key = Object.keys(data.status)[0];
+      status.innerText = data.status[key];
+      colorize(status, data.status[key]);
+    } else {
+      status.innerText = "–";
+      clearColors(status);
+    }
+  })
+  .catch(() => {
+    status.innerText = "Error fetching data";
+    clearColors(status);
+  });
+}
+</script>
+
+</body>
+</html>

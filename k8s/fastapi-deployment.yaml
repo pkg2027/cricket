@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cricket-fastapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cricket-fastapi
+  template:
+    metadata:
+      labels:
+        app: cricket-fastapi
+    spec:
+      containers:
+        - name: fastapi
+          image: cricket-fastapi:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000

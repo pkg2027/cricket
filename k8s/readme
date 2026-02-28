@@ -1,0 +1,21 @@
+User Browser
+     │
+     ▼
+┌──────────────┐
+│  NGINX       │  (Service :80)
+│  Ingress /   │
+│  ReverseProxy│
+└──────┬───────┘
+       │
+┌──────▼───────┐
+│  FastAPI     │  (Service :8000)
+│  Uvicorn     │
+└──────┬───────┘
+       │
+┌──────▼───────┐
+│ t_20-v1.0.py │  (UNCHANGED)
+└──────────────┘
+
+kubectl apply -f k8s/
+kubectl get pods
+kubectl get svc
