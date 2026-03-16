@@ -3,7 +3,7 @@ Cricket Match Score Prediction and Tracking Portal
 Developed a cricket analytics portal that allows cricket enthusiasts to analyze the current match situation and predict future team performance based on real-time match parameters. The system evaluates the current score, wickets fallen, and other match conditions to estimate how the team is likely to perform in the remaining part of the game.
 
 The platform helps users understand match momentum and possible outcomes by analyzing the current state of the innings and generating predictive insights about final scores or performance trends. This provides fans with a deeper analytical perspective of ongoing cricket matches.
-
+---------------------------------------------
 api calling (input_method)
 
 example
