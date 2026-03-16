@@ -172,3 +172,4 @@ http://localhost:8600/predict
 ⭐ Contributions, feedback, and improvements are welcome!
 
 ---
+<img width="1919" height="898" alt="Screenshot 2026-03-16 231312" src="https://github.com/user-attachments/assets/59e69a24-7a9c-45db-bedf-20470708b6b1" />
