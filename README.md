@@ -172,13 +172,3 @@ http://localhost:8600/predict
 ⭐ Contributions, feedback, and improvements are welcome!
 
 ---
-
-If you want, I can also **upgrade this README to look like a top GitHub project** by adding:
-
-* badges (build, python version, license)
-* architecture diagram
-* API response examples
-* screenshots
-* model explanation
-
-This will make the repo **look much more professional and recruiter-friendly.**
