@@ -4,9 +4,10 @@ Developed a cricket analytics portal that allows cricket enthusiasts to analyze 
 
 The platform helps users understand match momentum and possible outcomes by analyzing the current state of the innings and generating predictive insights about final scores or performance trends. This provides fans with a deeper analytical perspective of ongoing cricket matches.
 
-api calling (input)
+api calling (input_method)
 
 example
+
 curl -X POST http://localhost:8600/predict \
 -H "Content-Type: application/json" \
 -d '{
