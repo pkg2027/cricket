@@ -1,13 +1,86 @@
-Cricket Match Score Prediction and Tracking Portal
+---
 
-Developed a cricket analytics portal that allows cricket enthusiasts to analyze the current match situation and predict future team performance based on real-time match parameters. The system evaluates the current score, wickets fallen, and other match conditions to estimate how the team is likely to perform in the remaining part of the game.
+# 🏏 Cricket Match Score Prediction & Tracking Portal
 
-The platform helps users understand match momentum and possible outcomes by analyzing the current state of the innings and generating predictive insights about final scores or performance trends. This provides fans with a deeper analytical perspective of ongoing cricket matches.
----------------------------------------------
-api calling (input_method)
+A cricket analytics platform that enables enthusiasts to **analyze the current match situation and predict future team performance** using real-time match parameters.
 
-example
+The system evaluates factors such as **current score, overs played, wickets lost, and innings context** to estimate how a team is likely to perform for the remainder of the innings. This helps users understand **match momentum, projected scores, and potential outcomes**.
 
+The platform provides fans and analysts with a **data-driven perspective of live cricket matches**, making it easier to interpret match situations and anticipate game progression.
+
+---
+
+# 🚀 Features
+
+* **Match Situation Analysis**
+  Evaluates live match inputs including runs, overs, and wickets.
+
+* **Score Prediction Engine**
+  Predicts likely team performance based on current match conditions.
+
+* **Momentum Insights**
+  Helps users understand whether a team is accelerating, stabilizing, or collapsing.
+
+* **Innings-Aware Prediction**
+  Handles both **first innings score projections** and **second innings chase predictions**.
+
+* **API-Based Prediction Service**
+  Provides a simple REST API for integration with other applications or dashboards.
+
+---
+
+# 🧠 Prediction Inputs
+
+The prediction model analyzes the following parameters:
+
+| Parameter | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `score`   | Current team score                                   |
+| `overs`   | Overs completed (supports decimal format like `8.2`) |
+| `wickets` | Number of wickets fallen                             |
+| `innings` | Current innings (1 or 2)                             |
+| `target`  | Target score (required for second innings)           |
+
+---
+
+# 🛠 Tech Stack
+
+### Backend
+
+* **Python**
+* **Flask / FastAPI** (API service)
+
+### Data Processing
+
+* **NumPy**
+* **Pandas**
+
+### Machine Learning (if used)
+
+* **Scikit-Learn**
+
+### Tools
+
+* **Git**
+* **GitHub**
+
+---
+
+# 📡 API Usage
+
+The prediction service exposes a REST API endpoint:
+
+```
+POST /predict
+```
+
+---
+
+# Example API Call (cURL)
+
+### First Innings Prediction
+
+```bash
 curl -X POST http://localhost:8600/predict \
 -H "Content-Type: application/json" \
 -d '{
@@ -16,14 +89,13 @@ curl -X POST http://localhost:8600/predict \
   "wickets": 2,
   "innings": 1
 }'
-----------------------------------------------
-http POST localhost:8600/predict \
-score:=75 \
-overs:=8.2 \
-wickets:=2 \
-innings:=1
+```
 
-----------------------------------------------
+---
+
+### Second Innings Prediction (With Target)
+
+```bash
 curl -X POST http://localhost:8600/predict \
 -H "Content-Type: application/json" \
 -d '{
@@ -33,3 +105,80 @@ curl -X POST http://localhost:8600/predict \
   "innings": 2,
   "target": 165
 }'
+```
+
+---
+
+# Example Using HTTPie
+
+```bash
+http POST localhost:8600/predict \
+score:=75 \
+overs:=8.2 \
+wickets:=2 \
+innings:=1
+```
+
+---
+
+# 📊 Use Cases
+
+* Cricket analytics dashboards
+* Match commentary tools
+* Fan engagement platforms
+* Live match prediction engines
+* Sports data experimentation
+
+---
+
+# ⚙️ Running the Project
+
+Clone the repository:
+
+```bash
+git clone https://github.com/pkg2027/cricket.git
+cd cricket
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Start the API server:
+
+```bash
+python app.py
+```
+
+The prediction API will be available at:
+
+```
+http://localhost:8600/predict
+```
+
+---
+
+# 📌 Future Improvements
+
+* Live score integration via cricket APIs
+* Advanced machine learning prediction models
+* Visualization dashboards for match momentum
+* Historical match analysis
+
+---
+
+⭐ Contributions, feedback, and improvements are welcome!
+
+---
+
+If you want, I can also **upgrade this README to look like a top GitHub project** by adding:
+
+* badges (build, python version, license)
+* architecture diagram
+* API response examples
+* screenshots
+* model explanation
+
+This will make the repo **look much more professional and recruiter-friendly.**
