@@ -6,8 +6,7 @@ The platform helps users understand match momentum and possible outcomes by anal
 
 api calling (input)
 
-example:
-A:
+example
 curl -X POST http://localhost:8600/predict \
 -H "Content-Type: application/json" \
 -d '{
@@ -17,7 +16,6 @@ curl -X POST http://localhost:8600/predict \
   "innings": 1
 }'
 ----------------------------------------------
-B:
 http POST localhost:8600/predict \
 score:=75 \
 overs:=8.2 \
@@ -25,7 +23,6 @@ wickets:=2 \
 innings:=1
 
 ----------------------------------------------
-C:
 curl -X POST http://localhost:8600/predict \
 -H "Content-Type: application/json" \
 -d '{
