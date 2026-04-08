@@ -34,7 +34,7 @@ spec:
       - name: server-1
         image: pkg2027/t20-prediction-webui:v1.0
         ports:
-        - containerPort: 8085
+        - containerPort: 8726
         resources:
           requests:
             cpu: 100m
@@ -52,19 +52,17 @@ spec:
           timeoutSeconds: 2
           failureThreshold: 5
         readinessProbe:
-          exec:
-            command:
-            - curl
-            - http://localhost:8726
+          httpGet:
+            path: /
+            port: 8726
           initialDelaySeconds: 5
           periodSeconds: 60
           timeoutSeconds: 2
           failureThreshold: 3
         livenessProbe:
-          exec:
-            command:
-            - curl
-            - http://localhost:8726
+          httpGet:
+            path: /
+            port: 8726
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 2
@@ -81,7 +79,7 @@ spec:
   ports:
     - protocol: TCP
       port: 8726
-      targetPort: 8600
+      targetPort: 8726
   type: NodePort
 ---
 apiVersion: autoscaling/v2
