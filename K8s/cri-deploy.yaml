@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver-deploy
+  annotations:
+    kubernetes.io/change-cause: "original version deployed in the year 2026."
+  labels:
+    name: "cri-t20"
+    managed-by: "pkg2027"
+    version: "1.0.0"
+    components: "frontend"
+    part-of: "webapp"
+    instance: "march-2025"
+    env: "developer"
+    client: "test-user-A"
+    app: server-1
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: server-1
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: server-1
+    spec:
+      containers:
+      - name: server-1
+        image: pkg2027/t20-prediction-webui:v1.0
+        ports:
+        - containerPort: 8085
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            cpu: 15m
+            memory: 15Mi
+        startupProbe:
+          exec:
+            command:
+            - cat
+            - /var/www/html/index.html
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 5
+        readinessProbe:
+          exec:
+            command:
+            - cat
+            - /var/www/html/index.html
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          timeoutSeconds: 2
+          failureThreshold: 3
+        livenessProbe:
+          exec:
+            command:
+            - cat
+            - /var/www/html/index.html
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 2
+          failureThreshold: 4
+          successThreshold: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+spec:
+  selector:
+    app: server-1
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+  type: NodePort
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: webapp-hpa
+spec:
+  behavior:
+   scaleDown:
+    stabilizationWindowSeconds: 60
+    policies:
+    - type:   Pods
+      value: 3
+      periodSeconds: 10
+   scaleUp:
+    stabilizationWindowSeconds: 10
+    policies:
+    - type: Pods
+      value: 1
+      periodSeconds: 5
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: webserver-deploy
+  minReplicas: 5
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+---
