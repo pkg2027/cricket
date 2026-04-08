@@ -46,7 +46,7 @@ spec:
           exec:
             command:
             - cat
-            - /var/www/html/index.html
+            - /app/web_app.py
           initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 2
@@ -54,8 +54,8 @@ spec:
         readinessProbe:
           exec:
             command:
-            - cat
-            - /var/www/html/index.html
+            - curl
+            - http://localhost:8726
           initialDelaySeconds: 5
           periodSeconds: 60
           timeoutSeconds: 2
