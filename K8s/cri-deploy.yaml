@@ -80,8 +80,8 @@ spec:
     app: server-1
   ports:
     - protocol: TCP
-      port: 8085
-      targetPort: 8085
+      port: 8726
+      targetPort: 8600
   type: NodePort
 ---
 apiVersion: autoscaling/v2
