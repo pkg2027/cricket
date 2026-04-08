@@ -63,8 +63,8 @@ spec:
         livenessProbe:
           exec:
             command:
-            - cat
-            - /var/www/html/index.html
+            - curl
+            - http://localhost:8726
           initialDelaySeconds: 10
           periodSeconds: 5
           timeoutSeconds: 2
