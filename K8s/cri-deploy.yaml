@@ -10,7 +10,7 @@ metadata:
     version: "1.0.0"
     components: "frontend"
     part-of: "webapp"
-    instance: "march-2025"
+    instance: "march-2026"
     env: "developer"
     client: "test-user-A"
     app: server-1
